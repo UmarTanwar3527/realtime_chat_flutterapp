@@ -107,12 +107,3 @@ flutter run
 * Dark mode support
 
 ---
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-```
-
-Do you want me to also include **installation instructions for deep links on Android & iOS** in this README so people can set it up without asking?
-```
