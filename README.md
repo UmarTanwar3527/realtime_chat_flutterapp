@@ -25,29 +25,28 @@ A real-time chat application built with Flutter and Supabase. This app allows us
 
 ## 📂 Project Screenshots
 
-<p float="left">
-  <div align="center">
-    <strong>Register Screen</strong><br>
-    <img src="https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(2).jpg" alt="Register Screen" width="250"/>
-  </div>
-
-  <div align="center">
-    <strong>SignIn Screen</strong><br>
-    <img src="https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(1).jpg" alt="SignIn Screen" width="250"/>
-  </div>
-</p>
-
-<p float="left">
-  <div align="center">
-    <strong>Home Screen</strong><br>
-    <img src="https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media.jpg" alt="Home Screen" width="250"/>
-  </div>
-
-  <div align="center">
-    <strong>Chat Screen</strong><br>
-    <img src="https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(3).jpg" alt="Chat Screen" width="250"/>
-  </div>
-</p>
+<table>
+  <tr>
+    <td align="center">
+      <strong>Register Screen</strong><br>
+      <img src="https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(2).jpg" alt="Register Screen" width="250"/>
+    </td>
+    <td align="center">
+      <strong>SignIn Screen</strong><br>
+      <img src="https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(1).jpg" alt="SignIn Screen" width="250"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <strong>Home Screen</strong><br>
+      <img src="https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media.jpg" alt="Home Screen" width="250"/>
+    </td>
+    <td align="center">
+      <strong>Chat Screen</strong><br>
+      <img src="https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(3).jpg" alt="Chat Screen" width="250"/>
+    </td>
+  </tr>
+</table>
 
 
 
