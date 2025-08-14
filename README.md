@@ -23,16 +23,33 @@ A real-time chat application built with Flutter and Supabase. This app allows us
 - ├── constants.dart # Supabase credentials
 - └── main.dart # App entry point
 
-## 📂 Project ScreenShots
+## 📂 Project Screenshots
 
-### Register Screen
-![Register Screen](https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(2).jpg)
-### SignIn Screen
-![SignIn Screen](https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(1).jpg)
-### Home Screen
-![Home Screen](https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media.jpg)
-### Chat Screen
-![Chat Screen](https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(3).jpg)
+<p float="left">
+  <div align="center">
+    <strong>Register Screen</strong><br>
+    <img src="https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(2).jpg" alt="Register Screen" width="250"/>
+  </div>
+
+  <div align="center">
+    <strong>SignIn Screen</strong><br>
+    <img src="https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(1).jpg" alt="SignIn Screen" width="250"/>
+  </div>
+</p>
+
+<p float="left">
+  <div align="center">
+    <strong>Home Screen</strong><br>
+    <img src="https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media.jpg" alt="Home Screen" width="250"/>
+  </div>
+
+  <div align="center">
+    <strong>Chat Screen</strong><br>
+    <img src="https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(3).jpg" alt="Chat Screen" width="250"/>
+  </div>
+</p>
+
+
 
 ---
 
