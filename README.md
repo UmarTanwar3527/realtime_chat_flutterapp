@@ -23,6 +23,16 @@ A real-time chat application built with Flutter and Supabase. This app allows us
 - ├── constants.dart # Supabase credentials
 - └── main.dart # App entry point
 
+## 📂 Project ScreenShots
+
+### Register Screen
+![Register Screen](https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(2).jpg)
+### SignIn Screen
+![SignIn Screen](https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(1).jpg)
+### Home Screen
+![Home Screen](https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media.jpg)
+### Chat Screen
+![Chat Screen](https://github.com/UmarTanwar3527/realtime_chat_flutterapp/blob/main/appsereenshots/Media%20(3).jpg)
 
 ---
 
