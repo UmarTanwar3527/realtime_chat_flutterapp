@@ -26,10 +26,13 @@ class RoomsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var username = this.username?.username;
+    if(username == null){
+      username = 'current username';
+    }
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('$username'),
+        title: Text('Chats of $username'),
         actions: [
           TextButton(
             onPressed: () async {
