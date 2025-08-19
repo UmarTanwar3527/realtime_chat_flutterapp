@@ -12,27 +12,23 @@ import 'chat_page.dart';
 /// Displays the list of chat threads
 class RoomsPage extends StatelessWidget {
   final Profile? username;
-  const RoomsPage({Key? key,required this.username}) : super(key: key);
+  const RoomsPage({Key? key, required this.username}) : super(key: key);
 
   static Route<void> route({Profile? username}) {
     return MaterialPageRoute(
       builder: (context) => BlocProvider<RoomCubit>(
         create: (context) => RoomCubit()..initializeRooms(context),
-        child: RoomsPage(username: username,),
+        child: RoomsPage(username: username),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    var username = this.username?.username;
-    if(username == null){
-      username = 'current username';
-    }
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Chats of $username'),
+        title: Text('Chats of ${username?.username ?? 'current username'}'),
         actions: [
           TextButton(
             onPressed: () async {

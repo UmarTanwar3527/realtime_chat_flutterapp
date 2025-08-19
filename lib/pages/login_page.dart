@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:realtime_chat_flutter/models/profile.dart';
 import 'package:realtime_chat_flutter/pages/rooms_page.dart';
 import 'package:realtime_chat_flutter/utils/constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -24,12 +25,16 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
     try {
-      await supabase.auth.signInWithPassword(
+      final AuthResponse res =
+          await supabase.auth.signInWithPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
+      final String userId = res.user!.id;
+      final profile = await getProfile(userId);
       if (mounted) {
-        Navigator.of(context).pushAndRemoveUntil(RoomsPage.route(), (route) => false);
+        Navigator.of(context).pushAndRemoveUntil(
+            RoomsPage.route(username: profile), (route) => false);
       }
     } on AuthException catch (error) {
       context.showErrorSnackBar(message: error.message);
@@ -41,6 +46,15 @@ class _LoginPageState extends State<LoginPage> {
         _isLoading = false;
       });
     }
+  }
+
+  Future<Profile?> getProfile(String userId) async {
+    final res = await Supabase.instance.client
+        .from('profiles')
+        .select()
+        .eq('id', userId)
+        .single();
+    return Profile.fromJson(res);
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:realtime_chat_flutter/models/profile.dart';
 import 'package:realtime_chat_flutter/pages/register_page.dart';
 import 'package:realtime_chat_flutter/pages/rooms_page.dart';
 import 'package:realtime_chat_flutter/utils/constants.dart';
@@ -29,8 +30,10 @@ class SplashPageState extends State<SplashPage> {
         Navigator.of(context).pushAndRemoveUntil(
             RegisterPage.route(), (_) => false);
       } else {
+        final userId = Supabase.instance.client.auth.currentUser!.id;
+        final profile = await getProfile(userId);
         Navigator.of(context).pushAndRemoveUntil(
-            RoomsPage.route(), (_) => false);
+            RoomsPage.route(username: profile), (_) => false);
       }
     } catch (_) {
       context.showErrorSnackBar(
@@ -38,6 +41,19 @@ class SplashPageState extends State<SplashPage> {
       );
       Navigator.of(context).pushAndRemoveUntil(
           RegisterPage.route(), (_) => false);
+    }
+  }
+
+  Future<Profile?> getProfile(String userId) async {
+    try {
+      final res = await Supabase.instance.client
+          .from('profiles')
+          .select()
+          .eq('id', userId)
+          .single();
+      return Profile.fromJson(res);
+    } catch (e) {
+      return null;
     }
   }
 

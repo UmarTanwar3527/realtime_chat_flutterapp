@@ -38,4 +38,12 @@ class Profile {
       createdAt: createdAt ?? this.createdAt,
     );
   }
+
+  factory Profile.fromJson(Map<String, dynamic> json) {
+    return Profile(
+      id: json['id'],
+      username: json['username'],
+      createdAt: DateTime.parse(json['created_at']),
+    );
+  }
 }
