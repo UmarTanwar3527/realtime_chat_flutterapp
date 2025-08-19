@@ -49,6 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
             haveNavigated = true;
             Navigator.of(context)
                 .pushReplacement(RoomsPage.route());
+                
           }
         });
   }
@@ -108,6 +109,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 if (val == null || val.isEmpty) {
                   return 'Required';
                 }
+                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(val)) {
+                    return "Enter a valid email";
+                  }
                 return null;
               },
               keyboardType: TextInputType.emailAddress,

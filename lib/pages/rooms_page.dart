@@ -10,7 +10,7 @@ import '../cubits/rooms/rooms_cubit.dart';
 import 'chat_page.dart';
 
 /// Displays the list of chat threads
-class RoomsPage extends StatelessWidget {
+class RoomsPage extends StatefulWidget {
   final Profile? username;
   const RoomsPage({Key? key, required this.username}) : super(key: key);
 
@@ -24,11 +24,16 @@ class RoomsPage extends StatelessWidget {
   }
 
   @override
+  State<RoomsPage> createState() => _RoomsPageState();
+}
+
+class _RoomsPageState extends State<RoomsPage> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Chats of ${username?.username ?? 'current username'}'),
+        title: Text('Chats of ${widget.username?.username ?? 'current username'}'),
         actions: [
           TextButton(
             onPressed: () async {
