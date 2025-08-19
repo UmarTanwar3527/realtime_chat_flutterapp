@@ -11,32 +11,32 @@ import 'chat_page.dart';
 
 /// Displays the list of chat threads
 class RoomsPage extends StatelessWidget {
-  const RoomsPage({Key? key}) : super(key: key);
+  final Profile? username;
+  const RoomsPage({Key? key,required this.username}) : super(key: key);
 
-  static Route<void> route() {
+  static Route<void> route({Profile? username}) {
     return MaterialPageRoute(
       builder: (context) => BlocProvider<RoomCubit>(
-        create: (context) =>
-        RoomCubit()..initializeRooms(context),
-        child: const RoomsPage(),
+        create: (context) => RoomCubit()..initializeRooms(context),
+        child: RoomsPage(username: username,),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    var username = this.username?.username;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Rooms'),
+        title: Text('$username'),
         actions: [
           TextButton(
             onPressed: () async {
               await supabase.auth.signOut();
-              Navigator.of(context).pushAndRemoveUntil(
-                RegisterPage.route(),
-                    (route) => false,
-              );
+              Navigator.of(
+                context,
+              ).pushAndRemoveUntil(RegisterPage.route(), (route) => false);
             },
             child: const Text('Logout'),
           ),
@@ -49,8 +49,7 @@ class RoomsPage extends StatelessWidget {
           } else if (state is RoomsLoaded) {
             final newUsers = state.newUsers;
             final rooms = state.rooms;
-            return BlocBuilder<ProfilesCubit,
-                ProfilesState>(
+            return BlocBuilder<ProfilesCubit, ProfilesState>(
               builder: (context, state) {
                 if (state is ProfilesLoaded) {
                   final profiles = state.profiles;
@@ -62,40 +61,35 @@ class RoomsPage extends StatelessWidget {
                           itemCount: rooms.length,
                           itemBuilder: (context, index) {
                             final room = rooms[index];
-                            final otherUser =
-                            profiles[room.otherUserId];
+                            final otherUser = profiles[room.otherUserId];
 
                             return ListTile(
-                              onTap: () =>
-                                  Navigator.of(context)
-                                      .push(ChatPage.route(
-                                      room.id)),
+                              onTap: () => Navigator.of(context).push(
+                                ChatPage.route(room.id, otherUser: otherUser),
+                              ),
                               leading: CircleAvatar(
                                 child: otherUser == null
                                     ? preloader
-                                    : Text(otherUser
-                                    .username
-                                    .substring(0, 2)),
+                                    : Text(otherUser.username.substring(0, 2)),
                               ),
-                              title: Text(otherUser == null
-                                  ? 'Loading...'
-                                  : otherUser.username),
-                              subtitle: room.lastMessage !=
-                                  null
+                              title: Text(
+                                otherUser == null
+                                    ? 'Loading...'
+                                    : otherUser.username,
+                              ),
+                              subtitle: room.lastMessage != null
                                   ? Text(
-                                room.lastMessage!
-                                    .content,
-                                maxLines: 1,
-                                overflow: TextOverflow
-                                    .ellipsis,
-                              )
-                                  : const Text(
-                                  'Room created'),
-                              trailing: Text(format(
-                                  room.lastMessage
-                                      ?.createdAt ??
-                                      room.createdAt,
-                                  locale: 'en_short')),
+                                      room.lastMessage!.content,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    )
+                                  : const Text('Chat Room created'),
+                              trailing: Text(
+                                format(
+                                  room.lastMessage?.createdAt ?? room.createdAt,
+                                  locale: 'en_short',
+                                ),
+                              ),
                             );
                           },
                         ),
@@ -114,8 +108,7 @@ class RoomsPage extends StatelessWidget {
                 _NewUsers(newUsers: newUsers),
                 const Expanded(
                   child: Center(
-                    child: Text(
-                        'Start a chat by tapping on available users'),
+                    child: Text('Start a chat by tapping on available users'),
                   ),
                 ),
               ],
@@ -131,10 +124,7 @@ class RoomsPage extends StatelessWidget {
 }
 
 class _NewUsers extends StatelessWidget {
-  const _NewUsers({
-    Key? key,
-    required this.newUsers,
-  }) : super(key: key);
+  const _NewUsers({Key? key, required this.newUsers}) : super(key: key);
 
   final List<Profile> newUsers;
 
@@ -145,42 +135,41 @@ class _NewUsers extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: newUsers
-            .map<Widget>((user) => InkWell(
-          onTap: () async {
-            try {
-              final roomId =
-              await BlocProvider.of<RoomCubit>(
-                  context)
-                  .createRoom(user.id);
-              Navigator.of(context)
-                  .push(ChatPage.route(roomId));
-            } catch (_) {
-              context.showErrorSnackBar(
-                  message:
-                  'Failed creating a new room');
-            }
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: 60,
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    child: Text(user.username
-                        .substring(0, 2)),
+            .map<Widget>(
+              (user) => InkWell(
+                onTap: () async {
+                  try {
+                    final roomId = await BlocProvider.of<RoomCubit>(
+                      context,
+                    ).createRoom(user.id);
+                    Navigator.of(context).push(ChatPage.route(roomId, otherUser: user));
+                  } catch (_) {
+                    context.showErrorSnackBar(
+                      message: 'Failed creating a new room',
+                    );
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: 60,
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          child: Text(user.username.substring(0, 2)),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          user.username,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    user.username,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ))
+            )
             .toList(),
       ),
     );

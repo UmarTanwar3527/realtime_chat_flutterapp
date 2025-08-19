@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:realtime_chat_flutter/components/user_avatar.dart';
+import 'package:realtime_chat_flutter/models/profile.dart';
 import 'package:timeago/timeago.dart';
 
 import '../cubits/chat/chat_cubit.dart';
@@ -11,21 +12,23 @@ import '../utils/constants.dart';
 ///
 /// Displays chat bubbles as a ListView and TextField to enter new chat.
 class ChatPage extends StatelessWidget {
-  const ChatPage({Key? key}) : super(key: key);
+  final Profile? otherUser;
+  const ChatPage({Key? key,required Profile? this.otherUser,}) : super(key: key);
 
-  static Route<void> route(String roomId) {
+  static Route<void> route(String roomId, {Profile? otherUser}) {
     return MaterialPageRoute(
       builder: (context) => BlocProvider<ChatCubit>(
         create: (context) => ChatCubit()..setMessagesListener(roomId),
-        child: const ChatPage(),
+        child: ChatPage(otherUser: otherUser),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    var otherUsername = this.otherUser?.username;
     return Scaffold(
-      appBar: AppBar(title: const Text('Chat')),
+      appBar: AppBar(title: Text('$otherUsername')),
       body: BlocConsumer<ChatCubit, ChatState>(
         listener: (context, state) {
           if (state is ChatError) {
