@@ -46,4 +46,12 @@ class Profile {
       createdAt: DateTime.parse(json['created_at']),
     );
   }
+
+  String toJson() => '''
+    {
+      "id": "$id",
+      "username": "$username",
+      "created_at": "${createdAt.toIso8601String()}"
+    }
+  ''';
 }

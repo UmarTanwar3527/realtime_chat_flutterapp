@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:realtime_chat_flutter/models/profile.dart';
 import 'package:realtime_chat_flutter/pages/rooms_page.dart';
 import 'package:realtime_chat_flutter/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -32,9 +33,13 @@ class _LoginPageState extends State<LoginPage> {
       );
       final String userId = res.user!.id;
       final profile = await getProfile(userId);
-      if (mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-            RoomsPage.route(username: profile), (route) => false);
+      if (profile != null) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('profile', profile.toJson());
+        if (mounted) {
+          Navigator.of(context).pushAndRemoveUntil(
+              RoomsPage.route(), (route) => false);
+        }
       }
     } on AuthException catch (error) {
       context.showErrorSnackBar(message: error.message);

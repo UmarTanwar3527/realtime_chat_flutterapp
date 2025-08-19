@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:realtime_chat_flutter/models/profile.dart';
 import 'package:realtime_chat_flutter/pages/register_page.dart';
 import 'package:realtime_chat_flutter/pages/rooms_page.dart';
 import 'package:realtime_chat_flutter/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Page to redirect users to the appropriate page depending on the initial auth state
@@ -30,10 +33,18 @@ class SplashPageState extends State<SplashPage> {
         Navigator.of(context).pushAndRemoveUntil(
             RegisterPage.route(), (_) => false);
       } else {
-        final userId = Supabase.instance.client.auth.currentUser!.id;
-        final profile = await getProfile(userId);
-        Navigator.of(context).pushAndRemoveUntil(
-            RoomsPage.route(username: profile), (_) => false);
+        final prefs = await SharedPreferences.getInstance();
+        final profileString = prefs.getString('profile');
+        if (profileString != null) {
+          final profile = Profile.fromJson(jsonDecode(profileString));
+          Navigator.of(context).pushAndRemoveUntil(
+              RoomsPage.route(), (_) => false);
+        } else {
+          final userId = Supabase.instance.client.auth.currentUser!.id;
+          final profile = await getProfile(userId);
+          Navigator.of(context).pushAndRemoveUntil(
+              RoomsPage.route(), (_) => false);
+        }
       }
     } catch (_) {
       context.showErrorSnackBar(

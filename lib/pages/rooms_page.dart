@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:realtime_chat_flutter/cubits/profiles/profiles_cubit.dart';
 import 'package:realtime_chat_flutter/models/profile.dart';
 import 'package:realtime_chat_flutter/pages/register_page.dart';
 import 'package:realtime_chat_flutter/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart';
 
 import '../cubits/rooms/rooms_cubit.dart';
@@ -11,14 +13,13 @@ import 'chat_page.dart';
 
 /// Displays the list of chat threads
 class RoomsPage extends StatefulWidget {
-  final Profile? username;
-  const RoomsPage({Key? key, required this.username}) : super(key: key);
+  const RoomsPage({Key? key}) : super(key: key);
 
-  static Route<void> route({Profile? username}) {
+  static Route<void> route() {
     return MaterialPageRoute(
       builder: (context) => BlocProvider<RoomCubit>(
         create: (context) => RoomCubit()..initializeRooms(context),
-        child: RoomsPage(username: username),
+        child: const RoomsPage(),
       ),
     );
   }
@@ -28,12 +29,31 @@ class RoomsPage extends StatefulWidget {
 }
 
 class _RoomsPageState extends State<RoomsPage> {
+  String? username;
+
+  @override
+  void initState() {
+    super.initState();
+    loadProfile();
+  }
+
+  Future<void> loadProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+    final profileString = prefs.getString('profile');
+    if (profileString != null) {
+      final profile = Profile.fromJson(jsonDecode(profileString));
+      setState(() {
+        username = profile.username;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Chats of ${widget.username?.username ?? 'current username'}'),
+        title: Text('Chats of ${username ?? 'current username'}'),
         actions: [
           TextButton(
             onPressed: () async {

@@ -1,20 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:realtime_chat_flutter/models/profile.dart';
 import 'package:realtime_chat_flutter/pages/login_page.dart';
 import 'package:realtime_chat_flutter/pages/rooms_page.dart';
 import 'package:realtime_chat_flutter/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage(
-      {Key? key, required this.isRegistering})
-      : super(key: key);
+  const RegisterPage({Key? key, required this.isRegistering}) : super(key: key);
 
   static Route<void> route({bool isRegistering = false}) {
     return MaterialPageRoute(
-      builder: (context) =>
-          RegisterPage(isRegistering: isRegistering),
+      builder: (context) => RegisterPage(isRegistering: isRegistering),
     );
   }
 
@@ -33,8 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _usernameController = TextEditingController();
 
-  late final StreamSubscription<AuthState>
-  _authSubscription;
+  late final StreamSubscription<AuthState> _authSubscription;
 
   @override
   void initState() {
@@ -42,16 +40,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
     bool haveNavigated = false;
     // Listen to auth state to redirect user when the user clicks on confirmation link
-    _authSubscription =
-        supabase.auth.onAuthStateChange.listen((data) {
-          final session = data.session;
-          if (session != null && !haveNavigated) {
-            haveNavigated = true;
-            Navigator.of(context)
-                .pushReplacement(RoomsPage.route());
-                
-          }
-        });
+    _authSubscription = supabase.auth.onAuthStateChange.listen((data) {
+      final session = data.session;
+      if (session != null && !haveNavigated) {
+        haveNavigated = true;
+        Navigator.of(context).pushReplacement(RoomsPage.route());
+      }
+    });
   }
 
   @override
@@ -78,23 +73,38 @@ class _RegisterPageState extends State<RegisterPage> {
         emailRedirectTo: 'io.supabase.chat://login',
       );
       context.showSnackBar(
-          message:
-          'Please check your inbox for confirmation email.');
+        message: 'Please check your inbox for confirmation email.',
+      );
     } on AuthException catch (error) {
       context.showErrorSnackBar(message: error.message);
     } catch (error) {
       debugPrint(error.toString());
-      context.showErrorSnackBar(
-          message: unexpectedErrorMessage);
+      context.showErrorSnackBar(message: unexpectedErrorMessage);
     }
+    final userId = supabase.auth.currentUser!.id;
+    final profile = await getProfile(userId);
+    if (profile != null) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('profile', profile.toJson());
+      if (mounted) {
+        Navigator.of(context).pushReplacement(RoomsPage.route());
+      }
+    }
+  }
+
+  Future<Profile?> getProfile(String userId) async {
+    final res = await Supabase.instance.client
+        .from('profiles')
+        .select()
+        .eq('id', userId)
+        .single();
+    return Profile.fromJson(res);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Register'),
-      ),
+      appBar: AppBar(title: const Text('Register')),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -102,16 +112,14 @@ class _RegisterPageState extends State<RegisterPage> {
           children: [
             TextFormField(
               controller: _emailController,
-              decoration: const InputDecoration(
-                label: Text('Email'),
-              ),
+              decoration: const InputDecoration(label: Text('Email')),
               validator: (val) {
                 if (val == null || val.isEmpty) {
                   return 'Required';
                 }
                 if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(val)) {
-                    return "Enter a valid email";
-                  }
+                  return "Enter a valid email";
+                }
                 return null;
               },
               keyboardType: TextInputType.emailAddress,
@@ -120,9 +128,7 @@ class _RegisterPageState extends State<RegisterPage> {
             TextFormField(
               controller: _passwordController,
               obscureText: true,
-              decoration: const InputDecoration(
-                label: Text('Password'),
-              ),
+              decoration: const InputDecoration(label: Text('Password')),
               validator: (val) {
                 if (val == null || val.isEmpty) {
                   return 'Required';
@@ -136,16 +142,12 @@ class _RegisterPageState extends State<RegisterPage> {
             spacer,
             TextFormField(
               controller: _usernameController,
-              decoration: const InputDecoration(
-                label: Text('Username'),
-              ),
+              decoration: const InputDecoration(label: Text('Username')),
               validator: (val) {
                 if (val == null || val.isEmpty) {
                   return 'Required';
                 }
-                final isValid =
-                RegExp(r'^[A-Za-z0-9_]{3,24}$')
-                    .hasMatch(val);
+                final isValid = RegExp(r'^[A-Za-z0-9_]{3,24}$').hasMatch(val);
                 if (!isValid) {
                   return '3-24 long with alphanumeric or underscore';
                 }
@@ -159,12 +161,11 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             spacer,
             TextButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(LoginPage.route());
-                },
-                child:
-                const Text('I already have an account'))
+              onPressed: () {
+                Navigator.of(context).push(LoginPage.route());
+              },
+              child: const Text('I already have an account'),
+            ),
           ],
         ),
       ),
